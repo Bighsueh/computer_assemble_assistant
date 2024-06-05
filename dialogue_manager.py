@@ -5,6 +5,9 @@ from agenda import Agenda
 from task_handlers.chat_history_control_handler import ChatHistoryControlHandler
 from task_handlers.remove_stopwords_handler import RemoveStopwordsHandler
 from task_handlers.requirement_classification_handler import RequirementClassificationHandler
+from task_handlers.read_input_handler import ReadInputHandler
+from task_handlers.get_message_handler import GetMessageHandler
+from task_handlers.ask_genai_handler import AskGenAIHandler
 
 from gpt_api import call_gpt
 
@@ -16,14 +19,20 @@ class DialogueManager:
         self.agenda.add_task('requirement_classification')
         self.agenda.add_task('chat_history_control')
         self.agenda.add_task('remove_stopwords')
+        self.agenda.add_task('read_input')
+        self.agenda.add_task('get_message')
+        self.agenda.add_task('ask_genai')
 
         # 創建任務處理器鏈
         self.handler_chain = RequirementClassificationHandler()
-        self.handler_chain.set_next(ChatHistoryControlHandler()).set_next(RemoveStopwordsHandler())
+        self.handler_chain.set_next(ChatHistoryControlHandler()).set_next(RemoveStopwordsHandler()).set_next(ReadInputHandler()).set_next(GetMessageHandler()).set_next(AskGenAIHandler())
 
-    def handle_input(self, user_input):
-        # 獲取當前任務，並通過處理器鏈處理用戶輸入
-        current_task = self.agenda.get_next_task()
+    def handle_input(self, user_input, task_type=None):
+        # 如果提供了 task_type，則設置當前任務
+        if task_type:
+            current_task = task_type
+        else:
+            current_task = self.agenda.get_next_task()
         return self.handler_chain.handle(current_task, user_input, self.frame, self.agenda)
 
     def chat(self):
@@ -58,8 +67,3 @@ class DialogueManager:
             print(reply)
 
         return self.frame.requirement_list
-
-if __name__ == "__main__":
-    chat = DialogueManager()
-    requirement_list = chat.chat()
-    print(requirement_list)
