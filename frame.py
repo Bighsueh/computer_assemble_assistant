@@ -9,6 +9,7 @@ class Frame:
             "其他需求": []
         }
         self.requirement_list_key = list(self.requirement_list.keys())
+        self.component_menu = ""
 
     def fill_slot(self, slot, value):
         # 填充指定的槽位

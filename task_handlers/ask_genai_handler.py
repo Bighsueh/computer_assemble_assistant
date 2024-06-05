@@ -31,6 +31,8 @@ class AskGenAIHandler(TaskHandler):
                 """).format(greeting=greeting, query=query, content=content, message=message, notice=notice)
 
             answer = call_gpt(prompt)
+            
+            frame.component_menu = answer
             return answer
         else:
             # 否則，傳遞給下一個處理器

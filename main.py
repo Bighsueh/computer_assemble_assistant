@@ -49,5 +49,9 @@ if __name__ == "__main__":
 
     message = chat.handle_input(link, 'get_message')
 
-    answer = chat.handle_input((content, message, query), 'ask_genai')
-    print(answer)
+    # 存儲組裝的電腦零組件清單
+    chat.frame.component_menu = chat.handle_input((content, message, query), 'ask_genai')
+    
+    # 最後檢查
+    final_check_result = chat.handle_input(None, 'last_check')
+    print(final_check_result)
